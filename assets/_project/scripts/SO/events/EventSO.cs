@@ -18,6 +18,15 @@ namespace SO
         }
         public void Raise(object value)
         {
+            CoRef.StartCoroutineAway(RaiseEventsCallbacksAtEndOfFrameCO(value));
+        }
+
+        public void RaiseSync()
+        {
+            RaiseSync(null);
+        }
+        public void RaiseSync(object value)
+        {
             foreach (var kvp in callbacks.ToArray())
             {
                 Debug.Log($"<color=green>SoEvent</color> {name} <color=green>invoked</color> {kvp.Key.name}");
@@ -43,6 +52,13 @@ namespace SO
             {
                 callbacks.Remove(listener);
             }
+        }
+
+        IEnumerator RaiseEventsCallbacksAtEndOfFrameCO(object value)
+        {
+            yield return new WaitForEndOfFrame();
+
+            RaiseSync(value);
         }
 
         void OnAfterDeserialize()
