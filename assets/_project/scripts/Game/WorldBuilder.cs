@@ -1,4 +1,6 @@
+
 using Map;
+using SO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,40 +9,52 @@ using UnityEngine.Events;
 
 public class WorldBuilder : MonoBehaviour
 {
+    [Header("Round Data")]
+    public RoundDataSO roundData;
+    [Header("Building options")]
+    public float elevation;
+    public Vector2 padding;
+    [Header("Prefabs")]
+    public TileTypePrefabPair[] tiles;
 
-    [Header("worldSettings")]
-    public Vector2 size;
-    public int shortcutsNum;
-    public int pitFallsNum;
-    [Header("Events")]
-    public UnityEvent OnStartBuilding;
-    public UnityEvent OnFinishedBuilding;
-
-    [SerializeField] GameMap map;
-
-
-    private void OnEnable()
+    [System.Serializable]
+    public struct TileTypePrefabPair
     {
-        BuildWorld();
+        public TileType tileType;
+        public GameObject prefab;
     }
 
-    private void BuildWorld()
+    private List<GameObject> createdTiles = new List<GameObject>();
+
+    public void BuildWorld()
     {
-        OnStartBuilding.Invoke();
-        StartCoroutine(GenerateWorldCO(() =>
+        for (int i = 0; i < roundData.Value.map.tiles.Length; i++)
         {
-            StartCoroutine(BuildSceneCO());
-        }));
+            InstantiateTile(roundData.Value.map.tiles[i]);
+        }
     }
-    private IEnumerator GenerateWorldCO(Action onWorldGenerated)
+
+    private void InstantiateTile(Tile tile)
     {
-        yield return new WaitForEndOfFrame();
-        map = new GameMap(size, shortcutsNum, pitFallsNum);
-        Debug.Log(map.ToString());
-        onWorldGenerated();
+        Vector3 pos = tile.Cord;
+        pos.x = tile.Cord.x * padding.x;
+        pos.y = tile.Next * elevation;
+        pos.z = tile.Cord.y * padding.y;
+
+        createdTiles.Add(GameObject.Instantiate(GetTilePrefab(tile.Type), transform));
+        createdTiles[createdTiles.Count - 1].transform.position = pos;
+        createdTiles[createdTiles.Count - 1].name = tile.ToString();
     }
-    private IEnumerator BuildSceneCO()
+
+    private GameObject GetTilePrefab(TileType type)
     {
-        yield return new WaitForEndOfFrame();
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            if (tiles[i].tileType == type)
+            {
+                return tiles[i].prefab;
+            }
+        }
+        return null;
     }
 }

@@ -10,9 +10,8 @@ namespace Map
     public class GameMap
     {
         public Vector2 Size { get => size; }
-
         Vector2 size;
-        [SerializeField] Tile[] map;
+        public Tile[] tiles;
         Vector2 minSize = new Vector2(2, 2);
 
         private GameMap() { }
@@ -33,61 +32,61 @@ namespace Map
         {
             string mapText = "Portals\n\n";
             int row = 0;
-            for (int i = 0; i < map.Length; i++)
+            for (int i = 0; i < tiles.Length; i++)
             {
-                if (row != map[i].Cord.y)
+                if (row != tiles[i].Cord.y)
                 {
                     mapText += "\n";
-                    row = (int)map[i].Cord.y;
+                    row = (int)tiles[i].Cord.y;
                 }
-                mapText += map[i].ToString();
+                mapText += tiles[i].ToString();
             }
 
             mapText += "\n\n";
 
             mapText += "Directions\n\n";
             row = 0;
-            for (int i = 0; i < map.Length; i++)
+            for (int i = 0; i < tiles.Length; i++)
             {
-                if (row != map[i].Cord.y)
+                if (row != tiles[i].Cord.y)
                 {
                     mapText += "\n";
-                    row = (int)map[i].Cord.y;
+                    row = (int)tiles[i].Cord.y;
                 }
-                mapText += map[i].DirectionStr;
+                mapText += tiles[i].DirectionStr;
             }
 
             mapText += "\n\n";
 
             mapText += "Compined\n\n";
             row = 0;
-            for (int i = 0; i < map.Length; i++)
+            for (int i = 0; i < tiles.Length; i++)
             {
-                if (row != map[i].Cord.y)
+                if (row != tiles[i].Cord.y)
                 {
                     mapText += "\n";
-                    row = (int)map[i].Cord.y;
+                    row = (int)tiles[i].Cord.y;
                 }
 
-                if (map[i].ToString() != "[_]")
-                    mapText += map[i].ToString();
+                if (tiles[i].ToString() != "[_]")
+                    mapText += tiles[i].ToString();
                 else
-                    mapText += map[i].DirectionStr;
+                    mapText += tiles[i].DirectionStr;
             }
 
             mapText += "\n\n";
 
             mapText += "next\n\n";
             row = 0;
-            for (int i = 0; i < map.Length; i++)
+            for (int i = 0; i < tiles.Length; i++)
             {
-                if (row != map[i].Cord.y)
+                if (row != tiles[i].Cord.y)
                 {
                     mapText += "\n";
-                    row = (int)map[i].Cord.y;
+                    row = (int)tiles[i].Cord.y;
                 }
 
-                mapText += $" [{map[i].Num:D3}:<color=green>{map[i].Next:D3}</color>] ";
+                mapText += $" [{tiles[i].Num:D3}:<color=green>{tiles[i].Next:D3}</color>] ";
 
             }
 
@@ -114,18 +113,18 @@ namespace Map
                     GeneratePortal("<", reserved, out int start, out int end);
                     reserved.Add(start);
                     reserved.Add(end);
-                    map[start] = new Portal(start, end, size);
-                    map[start].logIcon = "<color=blue>[V]</color>";
-                    map[end].logIcon = "<color=blue>[O]</color>";
+                    tiles[start] = new Portal(start, end, size);
+                    tiles[start].logIcon = "<color=blue>[V]</color>";
+                    tiles[end].logIcon = "<color=blue>[O]</color>";
                 }
                 for (int i = 0; i < pitFallsNum; i++)
                 {
                     GeneratePortal(">", reserved, out int start, out int end);
                     reserved.Add(start);
                     reserved.Add(end);
-                    map[start] = new Portal(start, end, size);
-                    map[start].logIcon = "<color=red>[^]</color>";
-                    map[end].logIcon = "<color=red>[O]</color>";
+                    tiles[start] = new Portal(start, end, size);
+                    tiles[start].logIcon = "<color=red>[^]</color>";
+                    tiles[end].logIcon = "<color=red>[O]</color>";
                 }
             }
         }
@@ -160,7 +159,7 @@ namespace Map
                             int secoundRowStartingTileIndex = (int)(size.x);
                             do
                             {
-                                startIndex = UnityEngine.Random.Range(secoundRowStartingTileIndex, map.Length);
+                                startIndex = UnityEngine.Random.Range(secoundRowStartingTileIndex, tiles.Length);
                             } while (reserved.Contains(startIndex));
                             startCord.x = (startIndex % (int)size.x);
                             startCord.y = startIndex / (int)size.x;
@@ -179,24 +178,24 @@ namespace Map
 
         private void InitMap(Vector2 size, List<int> reserved)
         {
-            map = new Tile[(int)size.x * (int)size.y];
-            for (int i = 0; i < map.Length; i++)
+            tiles = new Tile[(int)size.x * (int)size.y];
+            for (int i = 0; i < tiles.Length; i++)
             {
-                map[i] = new Tile(i, size);
+                tiles[i] = new Tile(i, size);
             }
 
-            map[0] = new Start(0, size);
+            tiles[0] = new Start(0, size);
             reserved.Add(0);//reserve start point 
 
             if ((size.y % 2) != 0)
             {
-                map[map.Length - 1] = new End(map.Length - 1, size);
-                reserved.Add(map.Length - 1);//reserve end point
+                tiles[tiles.Length - 1] = new End(tiles.Length - 1, size);
+                reserved.Add(tiles.Length - 1);//reserve end point
             }
             else
             {
                 int lastRowStartingTileIndex = (int)(size.x * (size.y - 1));
-                map[lastRowStartingTileIndex] = new End(lastRowStartingTileIndex, size);
+                tiles[lastRowStartingTileIndex] = new End(lastRowStartingTileIndex, size);
                 reserved.Add(lastRowStartingTileIndex);//reserve end point
             }
         }

@@ -12,6 +12,7 @@ namespace Map
         {
             this.target = target;
             logIcon = "<color=blue>[O]</color>";
+            type = target > num ? TileType.ShortCut : TileType.Pit;
         }
     }
 }

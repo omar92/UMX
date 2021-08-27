@@ -4,19 +4,23 @@
 namespace Map
 {
     [System.Serializable]
-    class Tile
+    public class Tile
     {
         public int Num { get => num; }
         [SerializeField] private int num;
         public Vector2 Cord { get => cord; }
         [SerializeField] private Vector2 cord;
         public Directions Direction { get => direction; }
+        [SerializeField] private Directions direction;
+
+        public TileType Type { get => type; }
+        [SerializeField] protected TileType type;
 
         public int Next { get => next; }
         [SerializeField] private int next;
         public string DirectionStr { get { return GetDirectionLogIcon(); } }
 
-        [SerializeField] private Directions direction;
+
 
         public string logIcon;
         public Tile(int num, Vector2 mapSize)
@@ -33,6 +37,7 @@ namespace Map
             CalculateNext(mapSize);
 
             logIcon = "[_]";
+            type = TileType.Tile;
         }
 
         private void CalculateNext(Vector2 mapSize)

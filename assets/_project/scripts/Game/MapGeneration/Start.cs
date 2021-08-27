@@ -9,6 +9,7 @@ namespace Map
         public Start(int num, Vector2 mapSize) : base(num, mapSize)
         {
             logIcon = "[S]";
+            type = TileType.Start;
         }
     }
 }
