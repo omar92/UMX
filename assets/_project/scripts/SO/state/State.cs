@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace SO
 {
-    [CreateAssetMenu(fileName = "state", menuName = "SO/SM/state",order =0)]
+    [CreateAssetMenu(fileName = "state", menuName = "SO/SM/state", order = 0)]
     public class State : ScriptableObject
     {
         public SMType StateMachineType;
@@ -15,7 +15,10 @@ namespace SO
 
         public void Switch()
         {
-            StateMachineType.Value = this;
+            if (StateMachineType == null)
+                Debug.LogError($"you didnt set StateMachineType on state: {name}");
+            else
+                StateMachineType.Value = this;
         }
 
 
