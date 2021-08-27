@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,7 +28,7 @@ public class GameMap
 
     public new string ToString()
     {
-        string mapText = "";
+        string mapText = "Portals\n\n";
         int row = 0;
         for (int i = 0; i < map.Length; i++)
         {
@@ -36,20 +37,68 @@ public class GameMap
                 mapText += "\n";
                 row = (int)map[i].Cord.y;
             }
-
             mapText += map[i].ToString();
         }
+
+        mapText += "\n\n";
+
+        mapText += "Directions\n\n";
+        row = 0;
+        for (int i = 0; i < map.Length; i++)
+        {
+            if (row != map[i].Cord.y)
+            {
+                mapText += "\n";
+                row = (int)map[i].Cord.y;
+            }
+            mapText += map[i].DirectionStr;
+        }
+
+        mapText += "\n\n";
+
+        mapText += "Compined\n\n";
+        row = 0;
+        for (int i = 0; i < map.Length; i++)
+        {
+            if (row != map[i].Cord.y)
+            {
+                mapText += "\n";
+                row = (int)map[i].Cord.y;
+            }
+
+            if (map[i].ToString() != "[_]")
+                mapText += map[i].ToString();
+            else
+                mapText += map[i].DirectionStr;
+        }
+
+        mapText += "\n\n";
+
+        mapText += "next\n\n";
+        row = 0;
+        for (int i = 0; i < map.Length; i++)
+        {
+            if (row != map[i].Cord.y)
+            {
+                mapText += "\n";
+                row = (int)map[i].Cord.y;
+            }
+
+            mapText += $" [{map[i].Num:D3}:<color=green>{map[i].Next:D3}</color>] ";
+
+        }
+
         return mapText;
     }
 
     private void GenerateMap(int shortcutsNum, int PitFallsNum)
     {
-
-        InitMap(this.size);
-        GeneratePortals(shortcutsNum, PitFallsNum);
+        List<int> reserved = new List<int>();
+        InitMap(this.size, reserved);
+        GeneratePortals(shortcutsNum, PitFallsNum, reserved);
     }
 
-    private void GeneratePortals(int shortcutsNum, int pitFallsNum)
+    private void GeneratePortals(int shortcutsNum, int pitFallsNum, List<int> reserved)
     {
         if ((shortcutsNum * 2 + pitFallsNum * 2) > (size.x * size.y - 2))
         {
@@ -57,19 +106,18 @@ public class GameMap
         }
         else
         {
-            List<int> reserved = new List<int>();
             for (int i = 0; i < shortcutsNum; i++)
             {
-                GeneratePortal("<", ref reserved, out int start, out int end);
+                GeneratePortal("<", reserved, out int start, out int end);
                 reserved.Add(start);
                 reserved.Add(end);
                 map[start] = new Portal(start, end, size);
-                map[start].logIcon = "<color=green>[V]</color>";
-                map[end].logIcon = "<color=green>[O]</color>";
+                map[start].logIcon = "<color=blue>[V]</color>";
+                map[end].logIcon = "<color=blue>[O]</color>";
             }
             for (int i = 0; i < pitFallsNum; i++)
             {
-                GeneratePortal(">",ref reserved, out int start, out int end);
+                GeneratePortal(">", reserved, out int start, out int end);
                 reserved.Add(start);
                 reserved.Add(end);
                 map[start] = new Portal(start, end, size);
@@ -79,7 +127,7 @@ public class GameMap
         }
     }
 
-    private void GeneratePortal(string rule, ref List<int> reserved, out int startIndex, out int endIndex)
+    private void GeneratePortal(string rule, List<int> reserved, out int startIndex, out int endIndex)
     {
         Vector2 startCord;
         Vector2 EndCord;
@@ -92,12 +140,12 @@ public class GameMap
                         int lastRowStartingTileIndex = (int)(size.x * (size.y - 1)) + 1;
                         do
                         {
-                            startIndex = Random.Range(1, lastRowStartingTileIndex);
+                            startIndex = UnityEngine.Random.Range(0, lastRowStartingTileIndex);
                         } while (reserved.Contains(startIndex));
                         startCord.x = (startIndex % (int)size.x);
                         startCord.y = startIndex / (int)size.x;
                         EndCord.x = startCord.x;
-                        EndCord.y = Random.Range((int)startCord.y, (int)size.y - 1);
+                        EndCord.y = UnityEngine.Random.Range((int)startCord.y + 1, (int)size.y - 1);
                         endIndex = (int)(EndCord.x + size.x * EndCord.y);
                     } while (reserved.Contains(endIndex));
                 }
@@ -109,12 +157,12 @@ public class GameMap
                         int secoundRowStartingTileIndex = (int)(size.x);
                         do
                         {
-                            startIndex = Random.Range(secoundRowStartingTileIndex, (int)(size.x * size.y) - 1);
+                            startIndex = UnityEngine.Random.Range(secoundRowStartingTileIndex, map.Length);
                         } while (reserved.Contains(startIndex));
                         startCord.x = (startIndex % (int)size.x);
                         startCord.y = startIndex / (int)size.x;
                         EndCord.x = startCord.x;
-                        EndCord.y = Random.Range(1, (int)startCord.y);
+                        EndCord.y = UnityEngine.Random.Range(0, (int)startCord.y);
                         endIndex = (int)(EndCord.x + size.x * EndCord.y);
                     } while (reserved.Contains(endIndex));
                 }
@@ -126,7 +174,7 @@ public class GameMap
         }
     }
 
-    private void InitMap(Vector2 size)
+    private void InitMap(Vector2 size, List<int> reserved)
     {
         map = new Tile[(int)size.x * (int)size.y];
         for (int i = 0; i < map.Length; i++)
@@ -135,18 +183,36 @@ public class GameMap
         }
 
         map[0] = new Start(0, size);
-        map[map.Length - 1] = new End(map.Length - 1, size);
+        reserved.Add(0);//reserve start point 
+
+        if ((size.y % 2) != 0)
+        {
+            map[map.Length - 1] = new End(map.Length - 1, size);
+            reserved.Add(map.Length - 1);//reserve end point
+        }
+        else
+        {
+            int lastRowStartingTileIndex = (int)(size.x * (size.y - 1));
+            map[lastRowStartingTileIndex] = new End(lastRowStartingTileIndex, size);
+            reserved.Add(lastRowStartingTileIndex);//reserve end point
+        }
     }
 }
 
 [System.Serializable]
 class Tile
 {
-
     public int Num { get => num; }
     [SerializeField] private int num;
     public Vector2 Cord { get => cord; }
     [SerializeField] private Vector2 cord;
+    public Directions Direction { get => direction; }
+
+    public int Next { get => next; }
+    [SerializeField] private int next;
+    public string DirectionStr { get { return GetDirectionLogIcon(); } }
+
+    [SerializeField] private Directions direction;
 
     public string logIcon;
     public Tile(int num, Vector2 mapSize)
@@ -156,11 +222,62 @@ class Tile
         var x = (num % (int)mapSize.x);
         var y = num / (int)mapSize.x;
         cord = new Vector2(x, y);
+
+        direction = ((y % 2) == 0) ? Directions.right : Directions.left;
+        if ((x == 0 && (y % 2) != 0) || (x == (int)mapSize.x - 1 && (y % 2) == 0)) direction = Directions.up;
+
+        CalculateNext(mapSize);
+
         logIcon = "[_]";
     }
+
+    private void CalculateNext(Vector2 mapSize)
+    {
+        switch (direction)
+        {
+            case Directions.right:
+                next = num + 1;
+                break;
+            case Directions.left:
+                next = num - 1;
+                break;
+            case Directions.up:
+                //if (cord.y % 2 != 0)
+                    next = num + (int)mapSize.x;
+                //else
+                //    next = num + 1;
+                break;
+            case Directions.down:
+                if (cord.y % 2 == 0)
+                    next = num - (int)mapSize.x;
+                else
+                    next = num - 1;
+                next = num;
+                break;
+            default:
+                break;
+        }
+    }
+
     public new virtual string ToString()
     {
         return logIcon;
+    }
+    private string GetDirectionLogIcon()
+    {
+        switch (direction)
+        {
+            case Directions.right:
+                return "[>]";
+            case Directions.left:
+                return "[<]";
+            case Directions.up:
+                return "[V]";
+            case Directions.down:
+                return "[^]";
+            default:
+                return logIcon;
+        }
     }
 }
 
@@ -191,4 +308,8 @@ class End : Tile
     {
         logIcon = "[E]";
     }
+}
+enum Directions
+{
+    right, left, up, down
 }
