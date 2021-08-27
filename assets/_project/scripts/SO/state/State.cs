@@ -6,16 +6,16 @@ using UnityEngine.Events;
 
 namespace SO
 {
-    [CreateAssetMenu(fileName = "state", menuName = "SO/SM/state")]
+    [CreateAssetMenu(fileName = "state", menuName = "SO/SM/state",order =0)]
     public class State : ScriptableObject
     {
-        public SMType stateType;
+        public SMType StateMachineType;
 
         List<StateBehaviour> stateBehaviours = new List<StateBehaviour>();
 
         public void Switch()
         {
-            stateType.Value = this;
+            StateMachineType.Value = this;
         }
 
 

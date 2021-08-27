@@ -18,8 +18,11 @@ namespace SO {
 
         private void Start()
         {
-            StateMachineType.Value = StartingState;
-            OnStateChange(StartingState);
+            if (StartingState != null)
+            {
+                StateMachineType.Value = StartingState;
+                OnStateChange(StartingState);
+            }
         }
         private void OnStateChange(State state)
         {
