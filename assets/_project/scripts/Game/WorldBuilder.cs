@@ -17,6 +17,9 @@ public class WorldBuilder : MonoBehaviour
     [Header("Prefabs")]
     public TileTypePrefabPair[] tiles;
 
+    [Header("Events")]
+    public UnityEvent OnBuildComplete;
+
     [System.Serializable]
     public struct TileTypePrefabPair
     {
@@ -24,26 +27,34 @@ public class WorldBuilder : MonoBehaviour
         public GameObject prefab;
     }
 
-    private List<GameObject> createdTiles = new List<GameObject>();
-
+    private List<GameObject> sortedTiles = new List<GameObject>();
+    // private GameObject[] unsortedTiles;
     public void BuildWorld()
     {
-        for (int i = 0; i < roundData.Value.map.tiles.Length; i++)
+        int order = 0;
+        // unsortedTiles = new GameObject[roundData.Value.map.tiles.Length];
+        for (int i = 0; i < roundData.Value.map.tiles.Length; i = roundData.Value.map.tiles[i].Next)
         {
-            InstantiateTile(roundData.Value.map.tiles[i]);
+            var newTile = InstantiateTile(roundData.Value.map.tiles[i], order++);
+            sortedTiles.Add(newTile);
+            newTile.name = i.ToString();
+            newTile.GetComponent<TileHandler>().tileData = roundData.Value.map.tiles[i];
+            //   unsortedTiles[i] = newTile;
         }
+        OnBuildComplete.Invoke();
     }
 
-    private void InstantiateTile(Tile tile)
+    private GameObject InstantiateTile(Tile tile, int order)
     {
         Vector3 pos = tile.Cord;
         pos.x = tile.Cord.x * padding.x;
-        pos.y = tile.Next * elevation;
+        pos.y = order * elevation;
         pos.z = tile.Cord.y * padding.y;
 
-        createdTiles.Add(GameObject.Instantiate(GetTilePrefab(tile.Type), transform));
-        createdTiles[createdTiles.Count - 1].transform.position = pos;
-        createdTiles[createdTiles.Count - 1].name = tile.ToString();
+        var newtile = GameObject.Instantiate(GetTilePrefab(tile.Type), transform);
+        newtile.transform.position = pos;
+        newtile.name = tile.ToString();
+        return newtile;
     }
 
     private GameObject GetTilePrefab(TileType type)

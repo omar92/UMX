@@ -36,9 +36,6 @@ public class GameManager : MonoBehaviour
             var _roundData = new RoundData(playersNum, map);
             roundData.Value = _roundData;
 
-
-
-
             OnRoundDataGenerated.Invoke();
         }));
 

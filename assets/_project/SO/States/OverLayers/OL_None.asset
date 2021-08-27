@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 807a45d1a2c15ca46af0bdb3976dd61c, type: 3}
   m_Name: OL_None
   m_EditorClassIdentifier: 
-  StateMachineType: {fileID: 0}
+  StateMachineType: {fileID: 11400000, guid: c596e86efed3d3c49a70e4da8e3a9c7d, type: 2}
