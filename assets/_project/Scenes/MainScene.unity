@@ -392,9 +392,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0802be0d8bba5094d9c54641929055c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 10, y: 10}
-  shortcutsNum: 5
-  pitFallsNum: 5
+  size: {x: 8, y: 8}
+  shortcutsNum: 3
+  pitFallsNum: 3
   OnStartBuilding:
     m_PersistentCalls:
       m_Calls:
