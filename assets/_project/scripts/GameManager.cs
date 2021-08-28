@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] RoundDataSO roundData;
     [Header("SOEvents")]
     public EventSO SpawnPlayers;
+    public StringSO customeSeed;
     [Header("Events")]
     public UnityEvent OnStartGeneratingLevelData;
     public UnityEvent OnRoundDataGenerated;
@@ -63,7 +64,12 @@ public class GameManager : MonoBehaviour
     private IEnumerator GenerateWorldCO(Action onWorldGenerated)
     {
         yield return new WaitForEndOfFrame();
-        map = new GameMap(size, shortcutsNum, pitFallsNum,DateTime.Now.Second);
+        var seed = DateTime.Now.Second;
+        if (!String.IsNullOrEmpty(customeSeed.Value))
+        {
+            seed = customeSeed.Value.GetHashCode();
+        }
+        map = new GameMap(size, shortcutsNum,pitFallsNum,seed );
         Debug.Log(map.ToString());
         onWorldGenerated();
     }
