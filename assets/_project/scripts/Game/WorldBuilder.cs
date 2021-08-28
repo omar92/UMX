@@ -36,7 +36,7 @@ public class WorldBuilder : MonoBehaviour
         InittilesMapSO();
 
         int order = 0;
-        for (Position pos = new Position(0,0); PositionIsWithenBoundries(pos); pos = roundData.Value.map.tiles[pos.y][pos.x].Next)
+        for (Position pos = new Position(0,0); roundData.Value.map.PositionIsWithenBoundries(pos); pos = roundData.Value.map.tiles[pos.y][pos.x].Next)
         {
             var newTile = InstantiateTile(roundData.Value.map.tiles[pos.y][pos.x], order++);
             newTile.name = pos.ToString();
@@ -54,11 +54,6 @@ public class WorldBuilder : MonoBehaviour
         {
             tilesMapSO.Value[y] = new TileHandler[roundData.Value.map.tiles[y].Length];
         }
-    }
-
-    private bool PositionIsWithenBoundries(Position pos)
-    {
-        return ((pos.x < roundData.Value.map.Size.x) && ((pos.y < roundData.Value.map.Size.y)));
     }
 
     private TileHandler InstantiateTile(Tile tile, int order)

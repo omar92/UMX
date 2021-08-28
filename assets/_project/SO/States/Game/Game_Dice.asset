@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 807a45d1a2c15ca46af0bdb3976dd61c, type: 3}
+  m_Name: Game_Dice
+  m_EditorClassIdentifier: 
+  StateMachineType: {fileID: 11400000, guid: c3b25be308bb83f43ae0439b9f2c9479, type: 2}

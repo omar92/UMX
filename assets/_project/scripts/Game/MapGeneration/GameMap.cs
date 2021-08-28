@@ -35,6 +35,12 @@ namespace Map
         {
             return tiles[pos.y][pos.x];
         }
+
+        internal bool PositionIsWithenBoundries(Position pos)
+        {
+            return ((pos.x < Size.x) && ((pos.y < Size.y)));
+        }
+
         private void GenerateMap(int shortcutsNum, int pitFallsNum)
         {
 
@@ -96,6 +102,23 @@ namespace Map
                     tiles[end.y][end.x] = new PortalOut(end, start, size);
                 }
             }
+        }
+
+        internal Position Next(Position start, int num)
+        {
+            var currentTile = GetTile(start);
+            for (int i = 0; (i < num); i++)
+            {
+                if (PositionIsWithenBoundries(currentTile.Next))
+                {
+                    currentTile = GetTile(currentTile.Next);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return currentTile.Cord;
         }
 
         private void GeneratePortal(string rule, List<Position> reserved, out Position startCord, out Position EndCord)

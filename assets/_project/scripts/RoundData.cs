@@ -8,12 +8,13 @@ public struct RoundData
         players = new player[playersNum];
         for (int i = 0; i < players.Length; i++)
         {
+            players[i].id = i;
             players[i].RemainingSkips = skippsNum;
         }
         this.map = map;
         turn = -1;
         isStarted = false;
-        roundState = RoundState.idle;
+        roundState = RoundState.loading;
         diceValue = -1;
     }
     public player[] players;
@@ -26,5 +27,5 @@ public struct RoundData
 
 public enum RoundState
 {
-    idle, Dice, movement 
+    loading, idle, Dice, movement
 }

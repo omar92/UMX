@@ -53,9 +53,6 @@ public class GameManager : MonoBehaviour
     public void OnPlayersSpawned()
     {
         OnGameStart.Invoke();
-        var newROundData = roundData.Value;
-        newROundData.isStarted = true;
-        roundData.Value = newROundData;
     }
 
 

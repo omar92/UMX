@@ -24,6 +24,8 @@ public class PlayerHandler : MonoBehaviour
 
     private bool isMyTurn;
     private player localPlayerData;
+    Vector3 Offset;
+    bool isOffsetCalculated=false;
     private void Awake()
     {
         roundData.Subscribe(OnRoundDataChanged);
@@ -36,17 +38,17 @@ public class PlayerHandler : MonoBehaviour
 
     private void Update()
     {
-       // OnRoundDataChanged(roundData);
     }
     private void OnRoundDataChanged(RoundData newRoundData)
     {
-        Debug.Log("OnRoundDataChanged");
         if (newRoundData.isStarted)
         {
             HandleTurn(newRoundData.turn);
-            HandhleMovement(newRoundData.players[id].position);
+            if (newRoundData.roundState == RoundState.movement)
+            {
+                HandhleMovement(newRoundData.players[id].position);
+            }
         }
-
     }
 
     private void HandhleMovement(Position newLocation)
@@ -54,6 +56,7 @@ public class PlayerHandler : MonoBehaviour
         if (!localPlayerData.position.IsEqual(newLocation))
         {
             MoveTo(newLocation);
+            localPlayerData.position = newLocation;
         }
     }
 
@@ -64,12 +67,16 @@ public class PlayerHandler : MonoBehaviour
 
     private IEnumerator MoveToCo(Position newLocation)
     {
+        Debug.Log("MoveToCo: " + newLocation);
         OnMovementStart.Invoke();
+
 
         var path = GeneratePathPontsTo(newLocation);
 
-        var Offset = transform.position - tilesMap.Value[localPlayerData.position.x][localPlayerData.position.y].transform.position;
-
+        if (!isOffsetCalculated)
+        {
+            Offset = transform.position - tilesMap.Value[localPlayerData.position.y][localPlayerData.position.x].transform.position;
+        }
 
         for (int i = 1; i < path.Length; i++)
         {
@@ -87,17 +94,25 @@ public class PlayerHandler : MonoBehaviour
     private Transform[] GeneratePathPontsTo(Position newLocation)
     {
         List<Transform> points = new List<Transform>();
-        for (Position pos = localPlayerData.position; !pos.IsEqual(newLocation); pos = roundData.Value.map.GetTile(pos).Next)
+        if (roundData.Value.map.GetTile(localPlayerData.position).Type == Map.TileType.Pit || roundData.Value.map.GetTile(localPlayerData.position).Type == Map.TileType.ShortCut)
         {
-            points.Add(tilesMap.Value[pos.y][pos.x].transform);
+            points.Add(tilesMap.Value[localPlayerData.position.y][localPlayerData.position.x].transform);
+            points.Add(tilesMap.Value[newLocation.y][newLocation.x].transform);
         }
-        points.Add(tilesMap.Value[newLocation.y][newLocation.x].transform);
+        else
+        {
+            for (Position pos = localPlayerData.position; !pos.IsEqual(newLocation); pos = roundData.Value.map.GetTile(pos).Next)
+            {
+                points.Add(tilesMap.Value[pos.y][pos.x].transform);
+            }
+            points.Add(tilesMap.Value[newLocation.y][newLocation.x].transform);
+        }
         return points.ToArray();
     }
 
     private void HandleTurn(int turn)
     {
-        if (turn == id)
+        if (turn % roundData.Value.players.Length == id)
         {
             if (!isMyTurn)
             {
