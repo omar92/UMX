@@ -31,6 +31,10 @@ public class PlayerHandler : MonoBehaviour
         roundData.Subscribe(OnRoundDataChanged);
         localPlayerData = roundData.Value.players[id];
     }
+    private void OnDestroy()
+    {
+        roundData.UnSubscribe(OnRoundDataChanged);
+    }
     private void Start()
     {
 
@@ -67,7 +71,7 @@ public class PlayerHandler : MonoBehaviour
 
     private IEnumerator MoveToCo(Position newLocation)
     {
-        Debug.Log("MoveToCo: " + newLocation);
+
         OnMovementStart.Invoke();
 
 

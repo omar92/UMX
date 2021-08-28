@@ -25,6 +25,10 @@ public class RoundManager : MonoBehaviour
     {
         roundData.Subscribe(OnROundDataChanges);
     }
+    private void OnDestroy()
+    {
+        roundData.UnSubscribe(OnROundDataChanges);
+    }
 
     public void OnGameStart()
     {
@@ -77,7 +81,7 @@ public class RoundManager : MonoBehaviour
 
             case TileType.End:
                 {
-                    Debug.LogError($"Player{player.id} Won the game");
+                   // Debug.LogError($"Player{player.id} Won the game");
                     OnPlayerWin.Invoke(player.id);
                 }
                 break;

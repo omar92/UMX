@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     public void OnGoToMainMenu()
     {
         var currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadSceneAsync(currentScene.buildIndex);
+        SceneManager.LoadSceneAsync(currentScene.buildIndex,LoadSceneMode.Single);
     }
     public void OnPlayersSpawned()
     {

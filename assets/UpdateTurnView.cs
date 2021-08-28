@@ -15,11 +15,13 @@ public class UpdateTurnView : MonoBehaviour
         Text = GetComponent<Text>();
         roundData.Subscribe(OnRoundDataChanges);
     }
+    private void OnDestroy()
+    {
+        roundData.UnSubscribe(OnRoundDataChanges);
+    }
 
     private void OnRoundDataChanges(RoundData newRoundData)
     {
-
         Text.text = "" + ((newRoundData.turn % newRoundData.players.Length) + 1);
-
     }
 }

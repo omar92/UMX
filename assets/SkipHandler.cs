@@ -20,6 +20,11 @@ public class SkipHandler : MonoBehaviour
         currentPLayerRemainingSkipps = -1;
     }
 
+    private void OnDestroy()
+    {
+        roundData.UnSubscribe(OnRounDataChanges);
+    }
+
     private void OnRounDataChanges(RoundData obj)
     {
         if (roundData.Value.isStarted)

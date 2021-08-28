@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace so
 {
-    public abstract class SOVariable<T> : ScriptableObject
+    public abstract class SOVariable<T> : ScriptableObject, ISerializationCallbackReceiver
     {
 
         public T Value { get => _value; set { SetValue(value); } }
@@ -46,12 +46,6 @@ namespace so
             return v.Value;
         }
 
-        private void OnAfterDeserialize()
-        {
-            _value = startingValue;
-            UnSubscripeAll();
-        }
-        private void OnBeforeSerialize() { UnSubscripeAll(); ResetValue(); }
         private void UnSubscripeAll()
         {
             subscribers.Clear();
@@ -59,6 +53,17 @@ namespace so
         private void ResetValue()
         {
             _value = startingValue;
+        }
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            UnSubscripeAll(); ResetValue();
+        }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+            _value = startingValue;
+            UnSubscripeAll();
         }
     }
 }
