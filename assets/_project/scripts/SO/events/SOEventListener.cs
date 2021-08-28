@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-namespace SO
+namespace so
 {
     public class SOEventListener : MonoBehaviour
     {

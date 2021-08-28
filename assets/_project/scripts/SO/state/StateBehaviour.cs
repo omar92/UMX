@@ -1,5 +1,5 @@
 ﻿using UnityEngine.Events;
-namespace SO
+namespace so
 {
     [System.Serializable]
     public struct StateBehaviour

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SO
+namespace so
 {
     [CreateAssetMenu(fileName = "StringSO", menuName = "SO/variable/string")]
     public class StringSO : SOVariable<string>

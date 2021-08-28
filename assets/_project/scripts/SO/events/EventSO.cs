@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace SO
+namespace so
 {
     [CreateAssetMenu(fileName = "SOEvent", menuName = "SO/SoEvent")]
     public class EventSO : ScriptableObject

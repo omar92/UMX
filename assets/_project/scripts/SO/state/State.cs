@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace SO
+namespace so
 {
     [CreateAssetMenu(fileName = "state", menuName = "SO/SM/state", order = 0)]
     public class State : ScriptableObject

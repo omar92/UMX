@@ -24,6 +24,6 @@ public struct Position
 
     public new string ToString()
     {
-        return $"({x:D3},{y:D3})";
+        return $"({x:D2},{y:D2})";
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SO {
+namespace so {
     public class StateController : MonoBehaviour
     {
         public SMType StateMachineType;

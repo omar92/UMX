@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace SO
+namespace so
 {
     public abstract class SOVariable<T> : ScriptableObject
     {

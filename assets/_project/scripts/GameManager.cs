@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Map;
 using System;
-using SO;
+using so;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,7 +19,8 @@ public class GameManager : MonoBehaviour
 
     [Header("soVariables")]
     [SerializeField] RoundDataSO roundData;
-
+    [Header("SOEvents")]
+    public EventSO SpawnPlayers;
     [Header("Events")]
     public UnityEvent OnStartGeneratingLevelData;
     public UnityEvent OnRoundDataGenerated;
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     public void OnWorldBuildComplete()
     {
-
+        SpawnPlayers.Raise();
     }
 
 

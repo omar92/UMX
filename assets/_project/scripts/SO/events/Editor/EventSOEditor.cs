@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace SO
+namespace so
 {
     [CustomEditor(typeof(EventSO))]
     public class EventSOEditor : Editor

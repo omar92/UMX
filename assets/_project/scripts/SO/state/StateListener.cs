@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
-namespace SO
+namespace so
 {
     public class StateListener : MonoBehaviour
     {

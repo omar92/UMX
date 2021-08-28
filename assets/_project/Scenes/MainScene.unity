@@ -397,6 +397,7 @@ MonoBehaviour:
   pitFallsNum: 3
   playersNum: 4
   roundData: {fileID: 11400000, guid: a49934dba5e75934c9f76eef3c95907f, type: 2}
+  SpawnPlayers: {fileID: 11400000, guid: 52aae637ed8eb3844ac9f47c87879c17, type: 2}
   OnStartGeneratingLevelData:
     m_PersistentCalls:
       m_Calls:
