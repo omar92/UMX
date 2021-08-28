@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 
 namespace Map
@@ -6,75 +7,64 @@ namespace Map
     [System.Serializable]
     public class Tile
     {
-        public int Num { get => num; }
-        [SerializeField] private int num;
-        public Vector2 Cord { get => cord; }
-        [SerializeField] private Vector2 cord;
-        public Directions Direction { get => direction; }
-        [SerializeField] private Directions direction;
+        public Position Cord { get => cord; }
+        [SerializeField] private Position cord;
+
+        public Position Next { get => next; }
+        [SerializeField] private Position next;
 
         public TileType Type { get => type; }
         [SerializeField] protected TileType type;
 
-        public int Next { get => next; }
-        [SerializeField] private int next;
-        public string DirectionStr { get { return GetDirectionLogIcon(); } }
-
-
-
-        public string logIcon;
-        public Tile(int num, Vector2 mapSize)
+        public Tile(Position cord, Position mapSize)
         {
-            this.num = num;
-
-            var x = (num % (int)mapSize.x);
-            var y = num / (int)mapSize.x;
-            cord = new Vector2(x, y);
-
-            direction = ((y % 2) == 0) ? Directions.right : Directions.left;
-            if ((x == 0 && (y % 2) != 0) || (x == (int)mapSize.x - 1 && (y % 2) == 0)) direction = Directions.up;
-
+            this.cord = cord;
             CalculateNext(mapSize);
-
-            logIcon = "[_]";
             type = TileType.Tile;
         }
-
-        private void CalculateNext(Vector2 mapSize)
+        private Directions nextDirection;
+        private void CalculateNext(Position mapSize)
         {
+            nextDirection = ((cord.y % 2) == 0) ? Directions.right : Directions.left;
+            if ((cord.x == 0 && (cord.y % 2) != 0) || (cord.x == mapSize.x - 1 && (cord.y % 2) == 0)) nextDirection = Directions.up;
+
+            next = GetNeighpor(nextDirection);
+        }
+
+        public Position GetNeighpor(Directions direction)
+        {
+            Position neighporPos;
             switch (direction)
             {
                 case Directions.right:
-                    next = num + 1;
+                    neighporPos = new Position(cord.x + 1, cord.y);
                     break;
                 case Directions.left:
-                    next = num - 1;
+                    neighporPos = new Position(cord.x - 1, cord.y);
                     break;
                 case Directions.up:
-                    //if (cord.y % 2 != 0)
-                    next = num + (int)mapSize.x;
-                    //else
-                    //    next = num + 1;
+                    neighporPos = new Position(cord.x, cord.y + 1);
                     break;
                 case Directions.down:
-                    if (cord.y % 2 == 0)
-                        next = num - (int)mapSize.x;
-                    else
-                        next = num - 1;
-                    next = num;
+                    neighporPos = new Position(cord.x, cord.y - 1);
                     break;
                 default:
-                    break;
+                    throw new Exception("Unknown Direction");
             }
+            return neighporPos;
         }
 
         public new virtual string ToString()
         {
-            return logIcon;
+            return "[_]";
+        }
+        public virtual string ToString(bool showDirection)
+        {
+            return GetDirectionLogIcon();
         }
         private string GetDirectionLogIcon()
         {
-            switch (direction)
+            switch (nextDirection)
             {
                 case Directions.right:
                     return "[>]";
@@ -85,8 +75,47 @@ namespace Map
                 case Directions.down:
                     return "[^]";
                 default:
-                    return logIcon;
+                    return "[_]";
             }
         }
+        //public int Num { get => num; }
+        //[SerializeField] private int num;
+
+        //public Directions Direction { get => direction; }
+        //[SerializeField] private Directions direction;
+
+
+
+        //public int Next { get => next; }
+        //[SerializeField] private int next;
+        //public string DirectionStr { get { return GetDirectionLogIcon(); } }
+
+
+
+        //public string logIcon;
+        //public Tile(int num, Vector2 mapSize)
+        //{
+        //    this.num = num;
+
+        //    var x = (num % (int)mapSize.x);
+        //    var y = num / (int)mapSize.x;
+        //    cord = new Vector2(x, y);
+
+        //    direction = ((y % 2) == 0) ? Directions.right : Directions.left;
+        //    if ((x == 0 && (y % 2) != 0) || (x == (int)mapSize.x - 1 && (y % 2) == 0)) direction = Directions.up;
+
+        //    CalculateNext(mapSize);
+
+        //    logIcon = "[_]";
+        //    type = TileType.Tile;
+        //}
+
+
+
+        //public new virtual string ToString()
+        //{
+        //    return logIcon;
+        //}
+
     }
 }

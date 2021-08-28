@@ -6,10 +6,14 @@ namespace Map
     [System.Serializable]
     class Start : Tile
     {
-        public Start(int num, Vector2 mapSize) : base(num, mapSize)
+        public Start(Position cord, Position mapSize) : base(cord, mapSize)
         {
-            logIcon = "[S]";
             type = TileType.Start;
+        }
+
+        public override string ToString()
+        {
+            return "[S]";
         }
     }
 }

@@ -6,10 +6,13 @@ namespace Map
     [System.Serializable]
     class End : Tile
     {
-        public End(int num, Vector2 mapSize) : base(num, mapSize)
+        public End(Position cord, Position mapSize) : base(cord, mapSize)
         {
-            logIcon = "[E]";
             type = TileType.End;
+        }
+        public override string ToString()
+        {
+            return "[E]";
         }
     }
 }

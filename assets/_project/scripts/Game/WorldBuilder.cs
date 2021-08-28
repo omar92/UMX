@@ -31,22 +31,48 @@ public class WorldBuilder : MonoBehaviour
     // private GameObject[] unsortedTiles;
     public void BuildWorld()
     {
+
         int order = 0;
-        // unsortedTiles = new GameObject[roundData.Value.map.tiles.Length];
-        for (int i = 0; i < roundData.Value.map.tiles.Length; i = roundData.Value.map.tiles[i].Next)
+        for (Position pos = new Position(0,0); PositionIsWithenBoundries(pos); pos = roundData.Value.map.tiles[pos.y][pos.x].Next)
         {
-            var newTile = InstantiateTile(roundData.Value.map.tiles[i], order++);
-            sortedTiles.Add(newTile);
-            newTile.name = i.ToString();
-            newTile.GetComponent<TileHandler>().tileData = roundData.Value.map.tiles[i];
-            //   unsortedTiles[i] = newTile;
+            var newTile = InstantiateTile(roundData.Value.map.tiles[pos.y][pos.x], order++);
+            newTile.name = pos.ToString();
         }
+
+
+
+
+        //int order = 0;
+        // unsortedTiles = new GameObject[roundData.Value.map.tiles.Length];
+
+        //for (int y = 0; y < roundData.Value.map.tiles.Length; y++)
+        //{
+        //    for (int x = 0; x < roundData.Value.map.tiles[y].Length; x++)
+        //    {
+        //        var newTile = InstantiateTile(roundData.Value.map.tiles[y][x], order++);
+        //        newTile.name = roundData.Value.map.tiles[y][x].Cord.ToString();
+        //    }
+        //}
+
+        //for (int i = 0; i < roundData.Value.map.tiles.Length; i = roundData.Value.map.tiles[i].Next)
+        //{
+        //    var newTile = InstantiateTile(roundData.Value.map.tiles[i], order++);
+        //    sortedTiles.Add(newTile);
+        //    newTile.name = i.ToString();
+        //  //  newTile.GetComponent<TileHandler>().tileData = roundData.Value.map.tiles[i];
+        //    //   unsortedTiles[i] = newTile;
+        //}
         OnBuildComplete.Invoke();
+    }
+
+    private bool PositionIsWithenBoundries(Position pos)
+    {
+        return ((pos.x < roundData.Value.map.Size.x) && ((pos.y < roundData.Value.map.Size.y)));
     }
 
     private GameObject InstantiateTile(Tile tile, int order)
     {
-        Vector3 pos = tile.Cord;
+        Vector3 pos = new Vector3();
         pos.x = tile.Cord.x * padding.x;
         pos.y = order * elevation;
         pos.z = tile.Cord.y * padding.y;
