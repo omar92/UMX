@@ -77,11 +77,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPositionsGroup: {fileID: 630069786928377956}
   PlayersPrefabs:
-  - {fileID: 2317933733973721355, guid: aa60f1871a9585a4598d2ed74738a1f9, type: 3}
-  - {fileID: 6497676523848363079, guid: daaee2d47bdbba14283b050d7af4c982, type: 3}
-  - {fileID: 3687040172809146549, guid: 855f46ba445a1c84288af75ed32fe9d0, type: 3}
-  - {fileID: 1875614889560062265, guid: 8da658b1cfcec2b489a8ee18fcc2ca48, type: 3}
+  - {fileID: 1132357093909861190, guid: aa60f1871a9585a4598d2ed74738a1f9, type: 3}
+  - {fileID: 8480391259761049098, guid: daaee2d47bdbba14283b050d7af4c982, type: 3}
+  - {fileID: 2069117282329576184, guid: 855f46ba445a1c84288af75ed32fe9d0, type: 3}
+  - {fileID: 3862823465390910324, guid: 8da658b1cfcec2b489a8ee18fcc2ca48, type: 3}
   roundData: {fileID: 11400000, guid: a49934dba5e75934c9f76eef3c95907f, type: 2}
+  onPlayersSpawned: {fileID: 11400000, guid: 91af33ad12249b842980bbb82c686c8f, type: 2}
 --- !u!1 &4214577330292985783
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,7 +26,7 @@ public class WorldBuilder : MonoBehaviour
     public struct TileTypePrefabPair
     {
         public TileType tileType;
-        public GameObject prefab;
+        public TileHandler prefab;
     }
 
 
@@ -40,7 +40,7 @@ public class WorldBuilder : MonoBehaviour
         {
             var newTile = InstantiateTile(roundData.Value.map.tiles[pos.y][pos.x], order++);
             newTile.name = pos.ToString();
-            newTile.GetComponent<TileHandler>().cord = pos;
+            newTile.cord = pos;
             tilesMapSO.Value[pos.y][pos.x] = newTile;
         }
 
@@ -49,10 +49,10 @@ public class WorldBuilder : MonoBehaviour
 
     private void InittilesMapSO()
     {
-        tilesMapSO.Value = new GameObject[roundData.Value.map.tiles.Length][];
+        tilesMapSO.Value = new TileHandler[roundData.Value.map.tiles.Length][];
         for (int y = 0; y < roundData.Value.map.tiles.Length; y++)
         {
-            tilesMapSO.Value[y] = new GameObject[roundData.Value.map.tiles[y].Length];
+            tilesMapSO.Value[y] = new TileHandler[roundData.Value.map.tiles[y].Length];
         }
     }
 
@@ -61,7 +61,7 @@ public class WorldBuilder : MonoBehaviour
         return ((pos.x < roundData.Value.map.Size.x) && ((pos.y < roundData.Value.map.Size.y)));
     }
 
-    private GameObject InstantiateTile(Tile tile, int order)
+    private TileHandler InstantiateTile(Tile tile, int order)
     {
         Vector3 pos = new Vector3();
         pos.x = tile.Cord.x * padding.x;
@@ -74,7 +74,7 @@ public class WorldBuilder : MonoBehaviour
         return newtile;
     }
 
-    private GameObject GetTilePrefab(TileType type)
+    private TileHandler GetTilePrefab(TileType type)
     {
         for (int i = 0; i < tiles.Length; i++)
         {

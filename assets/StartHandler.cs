@@ -10,11 +10,13 @@ public class StartHandler : MonoBehaviour
 
     [Header("propereties")]
     public Transform startPositionsGroup;
-    public GameObject[] PlayersPrefabs;
+    public PlayerHandler[] PlayersPrefabs;
 
     [Header("soVariables")]
     public RoundDataSO roundData;
 
+    [Header("soEvents")]
+    public EventSO onPlayersSpawned;
 
     TileHandler th;
 
@@ -28,7 +30,9 @@ public class StartHandler : MonoBehaviour
         for (int i = 0; i < roundData.Value.players.Length; i++)
         {
             var player = GameObject.Instantiate(PlayersPrefabs[i % PlayersPrefabs.Length]);
+            player.id = i;
             player.transform.position = startPositionsGroup.GetChild(i % PlayersPrefabs.Length).position;
         }
+        onPlayersSpawned.Raise();
     }
 }

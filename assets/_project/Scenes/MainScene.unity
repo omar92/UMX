@@ -359,6 +359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 176347091}
   - component: {fileID: 176347093}
+  - component: {fileID: 176347092}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -380,6 +381,35 @@ Transform:
   m_Father: {fileID: 1302753829}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &176347092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176347090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5de740a284f83bf49a3dd1d4f3146a16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soEventCallbacks:
+  - soEvent: {fileID: 11400000, guid: 91af33ad12249b842980bbb82c686c8f, type: 2}
+    onRaise:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 176347093}
+          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+          m_MethodName: OnPlayersSpawned
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &176347093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +425,7 @@ MonoBehaviour:
   size: {x: 8, y: 8}
   shortcutsNum: 2
   pitFallsNum: 3
+  playerMaxSkipps: 0
   playersNum: 4
   roundData: {fileID: 11400000, guid: a49934dba5e75934c9f76eef3c95907f, type: 2}
   SpawnPlayers: {fileID: 11400000, guid: 52aae637ed8eb3844ac9f47c87879c17, type: 2}
@@ -419,6 +450,21 @@ MonoBehaviour:
       - m_Target: {fileID: 512297644}
         m_TargetAssemblyTypeName: WorldBuilder, Assembly-CSharp
         m_MethodName: BuildWorld
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnGameStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 489ace5f06c44a74698079e8beef474d, type: 2}
+        m_TargetAssemblyTypeName: so.State, Assembly-CSharp
+        m_MethodName: Switch
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -664,18 +710,18 @@ MonoBehaviour:
   roundData: {fileID: 11400000, guid: a49934dba5e75934c9f76eef3c95907f, type: 2}
   tilesMapSO: {fileID: 11400000, guid: 5174a78265f13ff429ad2ee0f20e04a8, type: 2}
   elevation: 0.05
-  padding: {x: 1.2, y: 1.2}
+  padding: {x: 1.4, y: 1.4}
   tiles:
   - tileType: 0
-    prefab: {fileID: 3244008876630243373, guid: 8a0efbdde58e79f49bcc2494df11603a, type: 3}
+    prefab: {fileID: 8526288191276270403, guid: 8a0efbdde58e79f49bcc2494df11603a, type: 3}
   - tileType: 1
-    prefab: {fileID: 680286654320485889, guid: 5b1972e696518ca4cb3e9ad57c7121d3, type: 3}
+    prefab: {fileID: 5919594780170722671, guid: 5b1972e696518ca4cb3e9ad57c7121d3, type: 3}
   - tileType: 2
-    prefab: {fileID: 2126226682370987592, guid: ab0dbed9224f49c4a8fa369e48ca9df6, type: 3}
+    prefab: {fileID: 5104727829842308390, guid: ab0dbed9224f49c4a8fa369e48ca9df6, type: 3}
   - tileType: 3
-    prefab: {fileID: 6583176962845628791, guid: c53679c518ec7a24c85eede7592712d1, type: 3}
+    prefab: {fileID: 2913279631548953, guid: c53679c518ec7a24c85eede7592712d1, type: 3}
   - tileType: 4
-    prefab: {fileID: 5261123068476440610, guid: 48ce39948ff7d0a4684d8a5dd3ee8bfb, type: 3}
+    prefab: {fileID: 1321030798841084748, guid: 48ce39948ff7d0a4684d8a5dd3ee8bfb, type: 3}
   OnBuildComplete:
     m_PersistentCalls:
       m_Calls:

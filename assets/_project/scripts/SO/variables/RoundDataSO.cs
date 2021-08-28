@@ -7,6 +7,9 @@ namespace so
     [CreateAssetMenu(fileName = "RoundDataSO", menuName = "game/RoundData")]
     public class RoundDataSO : SOVariable<RoundData>
     {
+        public void FireChanged()
+        {
 
+        }
     }
 }

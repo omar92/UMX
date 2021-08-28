@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using Map;
 using System;
 using so;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] int shortcutsNum;
     [SerializeField] int pitFallsNum;
 
+    [Header("GameSettings")]
+    [SerializeField] int playerMaxSkipps;
     [Header("gameSettings")]
     [SerializeField] int playersNum;
 
@@ -24,7 +27,7 @@ public class GameManager : MonoBehaviour
     [Header("Events")]
     public UnityEvent OnStartGeneratingLevelData;
     public UnityEvent OnRoundDataGenerated;
-
+    public UnityEvent OnGameStart;
     GameMap map;
 
     private void OnEnable()
@@ -33,10 +36,8 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(GenerateWorldCO(() =>
         {
-
-            var _roundData = new RoundData(playersNum, map);
+            var _roundData = new RoundData(playersNum, playerMaxSkipps, map);
             roundData.Value = _roundData;
-
             OnRoundDataGenerated.Invoke();
         }));
 
@@ -47,6 +48,14 @@ public class GameManager : MonoBehaviour
     public void OnWorldBuildComplete()
     {
         SpawnPlayers.Raise();
+    }
+
+    public void OnPlayersSpawned()
+    {
+        OnGameStart.Invoke();
+        var newROundData = roundData.Value;
+        newROundData.isStarted = true;
+        roundData.Value = newROundData;
     }
 
 

@@ -8,11 +8,11 @@ namespace so
 {
     public abstract class SOVariable<T> : ScriptableObject
     {
-       
+
         public T Value { get => _value; set { SetValue(value); } }
         [SerializeField] T startingValue;
         [SerializeField] private T _value;
-   
+
 
         List<Action<T>> subscribers = new List<Action<T>>();
 
@@ -21,10 +21,7 @@ namespace so
             if ((_value == null && newVal != null) || (_value != null && !_value.Equals(newVal)))
             {
                 _value = newVal;
-                for (int i = 0; i < subscribers.Count; i++)
-                {
-                    subscribers[i]?.Invoke(_value);
-                }
+                Invoke();
             }
         }
 
@@ -35,6 +32,13 @@ namespace so
         public void UnSubscribe(Action<T> action)
         {
             subscribers.Remove(action);
+        }
+        public void Invoke()
+        {
+            for (int i = 0; i < subscribers.Count; i++)
+            {
+                subscribers[i]?.Invoke(_value);
+            }
         }
 
         public static implicit operator T(SOVariable<T> v)

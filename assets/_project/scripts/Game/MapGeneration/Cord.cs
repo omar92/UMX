@@ -26,4 +26,9 @@ public struct Position
     {
         return $"({x:D2},{y:D2})";
     }
+
+    public bool IsEqual(Position p)
+    {
+        return (x == p.x && y == p.y);
+    }
 }

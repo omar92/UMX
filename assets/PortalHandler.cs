@@ -12,7 +12,7 @@ public class PortalHandler : MonoBehaviour
 
     TileHandler th;
     Position exitPos;
-    [SerializeField] public GameObject Exit;
+    [SerializeField] public TileHandler Exit;
 
     private void Awake()
     {
