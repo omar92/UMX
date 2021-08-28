@@ -16,12 +16,14 @@ public class RoundManager : MonoBehaviour
     [SerializeField] UnityEvent OnDiceState;
     [SerializeField] UnityEvent OnMovingState;
 
+    [SerializeField] UnityEvent OnLoseTurn;
+
+    [SerializeField] UnityEvent<int> OnPlayerWin;
 
     private bool isGameStarted;
     private void Awake()
     {
         roundData.Subscribe(OnROundDataChanges);
-        selectedDice.Subscribe(OnDiceChange);
     }
 
     public void OnGameStart()
@@ -32,10 +34,33 @@ public class RoundManager : MonoBehaviour
 
     public void OnPlayerMovementFinish()
     {
-        var player = roundData.Value.players[roundData.Value.turn % roundData.Value.players.Length];
+        var player = roundData.Value.GetCurrentPlayer();
         var reachedTile = roundData.Value.map.GetTile(player.position);
         var newRoundData = HandlePlayerReachedTile(player, reachedTile, roundData.Value);
         roundData.Value = newRoundData;
+    }
+
+    public void OnUseDice()
+    {
+        if (isGameStarted)
+        {
+            var newRoundData = roundData.Value;
+            newRoundData.diceValue = selectedDice;
+            roundData.Value = newRoundData;
+        }
+    }
+
+    public void OnSkippDice()
+    {
+        if (isGameStarted)
+        {
+            var newRoundData = roundData.Value;
+            newRoundData.players[newRoundData.turn % newRoundData.players.Length].RemainingSkips--;
+            newRoundData.players[newRoundData.turn % newRoundData.players.Length].isSkippedLastTurn = true;
+            newRoundData.players[newRoundData.turn % newRoundData.players.Length].lastRoll = selectedDice;
+            newRoundData.roundState = RoundState.turnStart;
+            roundData.Value = newRoundData;
+        }
     }
 
     private RoundData HandlePlayerReachedTile(player player, Tile reachedTile, RoundData newRoundData)
@@ -46,13 +71,14 @@ public class RoundManager : MonoBehaviour
             case TileType.Tile:
                 {
 
-                    newRoundData.roundState = RoundState.idle;
+                    newRoundData.roundState = RoundState.turnStart;
                 }
                 break;
 
             case TileType.End:
                 {
                     Debug.LogError($"Player{player.id} Won the game");
+                    OnPlayerWin.Invoke(player.id);
                 }
                 break;
             case TileType.ShortCut:
@@ -81,7 +107,6 @@ public class RoundManager : MonoBehaviour
     {
         if (isGameStarted)
         {
-            Debug.Log("ExcuteRoundData");
             newroundData = HandleState(newroundData.roundState, newroundData);
             roundData.Value = newroundData;
         }
@@ -89,36 +114,32 @@ public class RoundManager : MonoBehaviour
 
     private RoundData HandleState(RoundState roundState, RoundData newroundData)
     {
-        Debug.Log("roundState: " + roundState);
-        //  if (localRoundData.roundState != roundState)
+        switch (roundState)
         {
-            switch (roundState)
-            {
-                case RoundState.loading:
-                    newroundData.isStarted = true;
-                    newroundData.roundState = RoundState.idle;
-                    break;
-                case RoundState.idle:
-                    newroundData = HandleIdleState(newroundData);
-                    OnIdleState.Invoke();
-                    break;
-                case RoundState.Dice:
-                    newroundData = HandleDiceState(newroundData);
-                    OnDiceState.Invoke();
-                    break;
-                case RoundState.movement:
-                    newroundData = HandleMovementState(newroundData);
-                    OnMovingState.Invoke();
-                    break;
-                default:
-                    Debug.LogError("Unhandle round State");
-                    break;
-            }
+            case RoundState.loading:
+                newroundData.isStarted = true;
+                newroundData.roundState = RoundState.turnStart;
+                break;
+            case RoundState.turnStart:
+                newroundData = HandleTurnStartingState(newroundData);
+                OnIdleState.Invoke();
+                break;
+            case RoundState.Dice:
+                newroundData = HandleDiceState(newroundData);
+                OnDiceState.Invoke();
+                break;
+            case RoundState.movement:
+                newroundData = HandleMovementState(newroundData);
+                OnMovingState.Invoke();
+                break;
+            default:
+                Debug.LogError("Unhandle round State");
+                break;
         }
         return newroundData;
     }
 
-    private RoundData HandleIdleState(RoundData newroundData)
+    private RoundData HandleTurnStartingState(RoundData newroundData)
     {
         newroundData.turn++;
         selectedDice.Value = -1;
@@ -129,24 +150,34 @@ public class RoundManager : MonoBehaviour
     {
         if (newroundData.diceValue > 0)
         {
-            var player = newroundData.players[newroundData.turn % newroundData.players.Length];
-            player.lastRoll = newroundData.diceValue;
-            player.position = newroundData.map.Next(player.position, newroundData.diceValue);
-
-            newroundData.players[newroundData.turn % newroundData.players.Length] = player;
-            newroundData.roundState = RoundState.movement;
+            var player = newroundData.GetCurrentPlayer();
+            if (player.lastRoll == newroundData.diceValue && player.lastRoll == 6)//players lose a turn if they roll 6 twice in a row
+            {
+                Debug.Log("player lost turn");
+                OnLoseTurn.Invoke();
+                newroundData.roundState = RoundState.turnStart;
+            }
+            else
+            {
+                var moveDistance = newroundData.diceValue;
+                if (player.isSkippedLastTurn)
+                {
+                    moveDistance += player.lastRoll;
+                    player.isSkippedLastTurn = false;
+                }
+                player.position = newroundData.map.Next(player.position, moveDistance);
+                player.lastRoll = newroundData.diceValue;
+                newroundData.players[newroundData.turn % newroundData.players.Length] = player;
+                newroundData.roundState = RoundState.movement;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("incoming dice number invalid:" + newroundData.diceValue);
         }
         return newroundData;
     }
-    private void OnDiceChange(int diceVal)
-    {
-        if (isGameStarted)
-        {
-            var newRoundData = roundData.Value;
-            newRoundData.diceValue = diceVal;
-            roundData.Value = newRoundData;
-        }
-    }
+
     private RoundData HandleMovementState(RoundData newroundData)
     {
         return newroundData;

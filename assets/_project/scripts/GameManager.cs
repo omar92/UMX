@@ -6,6 +6,7 @@ using Map;
 using System;
 using so;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -44,12 +45,15 @@ public class GameManager : MonoBehaviour
 
     }
 
-
     public void OnWorldBuildComplete()
     {
         SpawnPlayers.Raise();
     }
-
+    public void OnGoToMainMenu()
+    {
+        var currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadSceneAsync(currentScene.buildIndex);
+    }
     public void OnPlayersSpawned()
     {
         OnGameStart.Invoke();

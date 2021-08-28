@@ -1,4 +1,5 @@
 ﻿using Map;
+using System;
 
 [System.Serializable]
 public struct RoundData
@@ -17,6 +18,12 @@ public struct RoundData
         roundState = RoundState.loading;
         diceValue = -1;
     }
+
+    internal player GetCurrentPlayer()
+    {
+        return players[turn % players.Length];
+    }
+
     public player[] players;
     public GameMap map;
     public int turn;
@@ -27,5 +34,5 @@ public struct RoundData
 
 public enum RoundState
 {
-    loading, idle, Dice, movement
+    loading, turnStart, Dice, movement
 }

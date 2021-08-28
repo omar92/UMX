@@ -25,7 +25,7 @@ public class PlayerHandler : MonoBehaviour
     private bool isMyTurn;
     private player localPlayerData;
     Vector3 Offset;
-    bool isOffsetCalculated=false;
+    bool isOffsetCalculated = false;
     private void Awake()
     {
         roundData.Subscribe(OnRoundDataChanged);
