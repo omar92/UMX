@@ -42,6 +42,13 @@ public class GameManager : MonoBehaviour
 
     }
 
+
+    public void OnWorldBuildComplete()
+    {
+
+    }
+
+
     private IEnumerator GenerateWorldCO(Action onWorldGenerated)
     {
         yield return new WaitForEndOfFrame();

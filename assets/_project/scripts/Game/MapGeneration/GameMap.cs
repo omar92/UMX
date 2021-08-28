@@ -31,7 +31,10 @@ namespace Map
                 GenerateMap(shortcutsNum, PitFallsNum);
             }
         }
-
+        public Tile GetTile(Position pos)
+        {
+            return tiles[pos.y][pos.x];
+        }
         private void GenerateMap(int shortcutsNum, int pitFallsNum)
         {
 

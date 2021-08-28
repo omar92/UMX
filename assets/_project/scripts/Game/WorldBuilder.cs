@@ -9,13 +9,15 @@ using UnityEngine.Events;
 
 public class WorldBuilder : MonoBehaviour
 {
-    [Header("Round Data")]
+    [Header("soVariables")]
     public RoundDataSO roundData;
+    public TilesMapSO tilesMapSO;
     [Header("Building options")]
     public float elevation;
     public Vector2 padding;
     [Header("Prefabs")]
     public TileTypePrefabPair[] tiles;
+
 
     [Header("Events")]
     public UnityEvent OnBuildComplete;
@@ -27,42 +29,31 @@ public class WorldBuilder : MonoBehaviour
         public GameObject prefab;
     }
 
-    private List<GameObject> sortedTiles = new List<GameObject>();
-    // private GameObject[] unsortedTiles;
+
     public void BuildWorld()
     {
+       
+        InittilesMapSO();
 
         int order = 0;
         for (Position pos = new Position(0,0); PositionIsWithenBoundries(pos); pos = roundData.Value.map.tiles[pos.y][pos.x].Next)
         {
             var newTile = InstantiateTile(roundData.Value.map.tiles[pos.y][pos.x], order++);
             newTile.name = pos.ToString();
+            newTile.GetComponent<TileHandler>().cord = pos;
+            tilesMapSO.Value[pos.y][pos.x] = newTile;
         }
 
-
-
-
-        //int order = 0;
-        // unsortedTiles = new GameObject[roundData.Value.map.tiles.Length];
-
-        //for (int y = 0; y < roundData.Value.map.tiles.Length; y++)
-        //{
-        //    for (int x = 0; x < roundData.Value.map.tiles[y].Length; x++)
-        //    {
-        //        var newTile = InstantiateTile(roundData.Value.map.tiles[y][x], order++);
-        //        newTile.name = roundData.Value.map.tiles[y][x].Cord.ToString();
-        //    }
-        //}
-
-        //for (int i = 0; i < roundData.Value.map.tiles.Length; i = roundData.Value.map.tiles[i].Next)
-        //{
-        //    var newTile = InstantiateTile(roundData.Value.map.tiles[i], order++);
-        //    sortedTiles.Add(newTile);
-        //    newTile.name = i.ToString();
-        //  //  newTile.GetComponent<TileHandler>().tileData = roundData.Value.map.tiles[i];
-        //    //   unsortedTiles[i] = newTile;
-        //}
         OnBuildComplete.Invoke();
+    }
+
+    private void InittilesMapSO()
+    {
+        tilesMapSO.Value = new GameObject[roundData.Value.map.tiles.Length][];
+        for (int y = 0; y < roundData.Value.map.tiles.Length; y++)
+        {
+            tilesMapSO.Value[y] = new GameObject[roundData.Value.map.tiles[y].Length];
+        }
     }
 
     private bool PositionIsWithenBoundries(Position pos)

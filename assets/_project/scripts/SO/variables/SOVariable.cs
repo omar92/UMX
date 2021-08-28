@@ -37,13 +37,17 @@ namespace SO
             subscribers.Remove(action);
         }
 
+        public static implicit operator T(SOVariable<T> v)
+        {
+            return v.Value;
+        }
 
-        public void OnAfterDeserialize()
+        private void OnAfterDeserialize()
         {
             _value = startingValue;
             UnSubscripeAll();
         }
-        public void OnBeforeSerialize() { UnSubscripeAll(); ResetValue(); }
+        private void OnBeforeSerialize() { UnSubscripeAll(); ResetValue(); }
         private void UnSubscripeAll()
         {
             subscribers.Clear();
