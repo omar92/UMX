@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator GenerateWorldCO(Action onWorldGenerated)
     {
         yield return new WaitForEndOfFrame();
-        map = new GameMap(size, shortcutsNum, pitFallsNum);
+        map = new GameMap(size, shortcutsNum, pitFallsNum,DateTime.Now.Second);
         Debug.Log(map.ToString());
         onWorldGenerated();
     }

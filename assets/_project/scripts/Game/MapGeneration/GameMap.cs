@@ -19,7 +19,7 @@ namespace Map
 
 
         private GameMap() { }
-        public GameMap(Vector2 size, int shortcutsNum, int PitFallsNum)
+        public GameMap(Vector2 size, int shortcutsNum, int PitFallsNum,int seed)
         {
             if (size.x < minSize.x || size.y < minSize.y)
             {
@@ -28,6 +28,7 @@ namespace Map
             else
             {
                 this.size = new Position(size);
+                UnityEngine.Random.InitState(seed);
                 GenerateMap(shortcutsNum, PitFallsNum);
             }
         }
